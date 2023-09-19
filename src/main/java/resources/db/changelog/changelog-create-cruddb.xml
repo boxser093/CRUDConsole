@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+
+
+    <changeSet id="create-create-cruddb-table" author="Ilya Predvechniy">
+        <createTable tableName="label">
+            <column autoIncrement="true" name="id" type="int">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+            <column name="status" type="text"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-writer-table" author="Ilya Predvechniy">
+        <createTable tableName="Writer">
+            <column autoIncrement="true" name="id" type="int">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="status" type="boolean"/>
+            <column name="firstName" type="varchar(64)"/>
+            <column name="lastName" type="varchar(64)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-post-table" author="Ilya Predvechniy">
+        <createTable tableName="Post">
+            <column autoIncrement="true" name="id" type="int">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="content" type="string"/>
+            <column name="createdStatus" type="boolean"/>
+            <column name="updateStatus" type="boolean"/>
+            <column name="statusActiviti" type="boolean"/>
+            <column name="writerId" type="int">
+                <constraints foreignKeyName="writerId" references="writer(id)" deleteCascade="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+
+
+    <changeSet id="create-posts_labels-table" author="Ilya Predvechniy">
+        <createTable tableName="posts_labels">
+            <column name="post_id" type="int(5)">
+                <constraints nullable="false" foreignKeyName="post_id" references="post(id)" deleteCascade="true"/>
+            </column>
+            <column name="label_id" type="int(5)">
+                <constraints foreignKeyName="label_id" references="label(id)" deleteCascade="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

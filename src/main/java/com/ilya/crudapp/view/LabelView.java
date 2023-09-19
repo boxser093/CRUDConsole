@@ -3,8 +3,6 @@ package com.ilya.crudapp.view;
 import com.ilya.crudapp.controller.LabelController;
 import com.ilya.crudapp.model.Label;
 import com.ilya.crudapp.model.Status;
-
-import java.util.Objects;
 import java.util.Scanner;
 
 public class LabelView {

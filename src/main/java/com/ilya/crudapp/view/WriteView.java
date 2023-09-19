@@ -1,9 +1,7 @@
 package com.ilya.crudapp.view;
 
 import com.ilya.crudapp.controller.WriterController;
-import com.ilya.crudapp.model.Status;
 import com.ilya.crudapp.model.Writer;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -15,8 +13,8 @@ public class WriteView {
     public void createWriter() {
         System.out.println("For create new writer please input data \n " +
                 "Input first Name");
+        scanner.nextLine();
         String firstName = scanner.nextLine();
-
         System.out.println("and last Name");
         String lastName = scanner.nextLine();
 

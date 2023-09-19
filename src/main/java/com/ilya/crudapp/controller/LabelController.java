@@ -4,23 +4,24 @@ import com.ilya.crudapp.model.Label;
 import com.ilya.crudapp.model.Status;
 import com.ilya.crudapp.repository.LabelRepository;
 import com.ilya.crudapp.repository.impl.GsonLabelRepositoryImpl;
+import com.ilya.crudapp.repository.jdbc.JDBCLabelRepositoryImpl;
 
 import java.util.List;
 
 public class LabelController {
-    private final LabelRepository labelRepository = new GsonLabelRepositoryImpl();
+    private final LabelRepository bdlabelRepository = new JDBCLabelRepositoryImpl();
     public Label findById(long id) {
-        return labelRepository.getById(id);
+        return bdlabelRepository.getById(id);
     }
     public List<Label> findAll() {
-       return labelRepository.getAll();
+       return bdlabelRepository.getAll();
     }
     public Label saveLabel(String name) {
         Label label = Label.builder()
                 .name(name)
                 .status(Status.ACTIVE)
                 .build();
-        return labelRepository.save(label);
+        return bdlabelRepository.save(label);
     }
     public boolean deleteById(Long id) {
         Label label = Label.builder()
@@ -28,7 +29,7 @@ public class LabelController {
                 .status(Status.DELETED)
                 .build();
 
-        return labelRepository.deleteById(id);
+        return bdlabelRepository.deleteById(id);
     }
     public Label updateLabel(Long id, String name, Status status) {
         Label label = Label.builder()
@@ -37,7 +38,7 @@ public class LabelController {
                 .status(status)
                 .build();
 
-        return labelRepository.update(label);
+        return bdlabelRepository.update(label);
     }
 
 

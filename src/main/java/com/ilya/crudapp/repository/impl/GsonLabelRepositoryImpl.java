@@ -15,14 +15,11 @@ import com.ilya.crudapp.model.Status;
 import com.ilya.crudapp.repository.LabelRepository;
 
 public class GsonLabelRepositoryImpl implements LabelRepository {
-
-    //TODO: make relative path
     private final String failName = "labels.json";
     private final Gson GSON = new Gson();
 
     private List<Label> getAllLabels() {
 
-        //TODO: read string and convert to List<Labels>
         List<Label> result = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(getPath(failName)))) {
@@ -38,7 +35,6 @@ public class GsonLabelRepositoryImpl implements LabelRepository {
     }
 
     private void writeAllLabelsToFile(List<Label> labels) {
-        //TODO: write string to FILE
         String jsonString = GSON.toJson(labels);
         try (FileWriter fw = new FileWriter(getPath(failName), false)) {
             fw.write(jsonString);
@@ -54,7 +50,6 @@ public class GsonLabelRepositoryImpl implements LabelRepository {
 
         return labels.stream().mapToLong(Label::getId).max().orElse(0) + 1;
     }
-
 
     @Override
     public Label getById(Long id) {

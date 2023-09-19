@@ -1,17 +1,17 @@
 package com.ilya.crudapp.controller;
 
-import com.ilya.crudapp.model.Label;
 import com.ilya.crudapp.model.Post;
 import com.ilya.crudapp.model.Status;
 import com.ilya.crudapp.model.Writer;
 import com.ilya.crudapp.repository.WriterRepository;
 import com.ilya.crudapp.repository.impl.GsonWriterRepositoryImpl;
+import com.ilya.crudapp.repository.jdbc.JDBCWriterRepositoryImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class WriterController {
-    private final WriterRepository writerRepository = new GsonWriterRepositoryImpl();
+    private final WriterRepository writerRepository = new JDBCWriterRepositoryImpl();
     private final PostController postController = new PostController();
     public List<Post> preparePost(List<Long> idPosts) {
         List<Post> result = new ArrayList<>();
@@ -32,7 +32,6 @@ public class WriterController {
                 .posts(postsWriters)
                 .status(Status.ACTIVE)
                 .build();
-        System.out.println("Create writer "+writer);
         return writerRepository.save(writer);
     }
     public boolean deleteById(Long idForDelete) {

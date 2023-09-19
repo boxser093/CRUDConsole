@@ -1,6 +1,5 @@
 package com.ilya.crudapp.view;
 
-
 import java.util.Scanner;
 
 public class ViewExecutor {

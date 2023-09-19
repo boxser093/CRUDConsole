@@ -1,9 +1,6 @@
 package com.ilya.crudapp.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -14,7 +11,9 @@ import java.util.List;
 public class Post {
     private Long id;
     private String content;
+    @Getter
     private boolean created;
+    @Getter
     private boolean update;
     private Status status;
     private List<Label> labels;

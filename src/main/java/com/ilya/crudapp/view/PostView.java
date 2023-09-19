@@ -1,7 +1,6 @@
 package com.ilya.crudapp.view;
 
 import com.ilya.crudapp.controller.PostController;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;

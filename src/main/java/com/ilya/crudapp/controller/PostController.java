@@ -4,14 +4,15 @@ import com.ilya.crudapp.model.Label;
 import com.ilya.crudapp.model.Post;
 import com.ilya.crudapp.model.Status;
 import com.ilya.crudapp.repository.PostRepository;
-import com.ilya.crudapp.repository.impl.GsonPostRepositoryImpl;
+import com.ilya.crudapp.repository.jdbc.JDBCPostRepositoryImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PostController {
-    private final PostRepository postRepository = new GsonPostRepositoryImpl();
+    private final PostRepository postRepository = new JDBCPostRepositoryImpl();
     private final LabelController labelController = new LabelController();
+
     public List<Label> prepareLabels(List<Long> idLabels) {
         List<Label> result = new ArrayList<>();
         idLabels.stream().forEach(x -> result.add(labelController.findById(x)));
