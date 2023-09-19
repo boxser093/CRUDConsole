@@ -1,4 +1,4 @@
-# CRUDconsole
+# CRUDConsole
 This program the demonstration simple crud app in console. 
 ## CRUDconsole
 
