@@ -31,11 +31,10 @@ public class LabelController {
 
         return bdlabelRepository.deleteById(id);
     }
-    public Label updateLabel(Long id, String name, Status status) {
+    public Label updateLabel(Long id, String name) {
         Label label = Label.builder()
                 .id(id)
                 .name(name)
-                .status(status)
                 .build();
 
         return bdlabelRepository.update(label);

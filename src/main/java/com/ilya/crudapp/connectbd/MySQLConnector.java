@@ -1,17 +1,15 @@
 package com.ilya.crudapp.connectbd;
 
 import java.lang.reflect.InvocationTargetException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class MySQLConnector {
-    private static MySQLConnector connector;
-    private final String userName = "root";
-    private final String password = "228228";
-    private String connectionUrl = "jdbc:mysql://localhost:3306/tests1";
+    private static final String userName = "root";
+    private static final String password = "228228";
+    private static String connectionUrl = "jdbc:mysql://localhost:3306/tests1";
 
-    public Connection getConnetion() {
+    // паблик стати к статик гет конекшен
+    private static Connection getConnetion() {
         Connection connection;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
@@ -23,14 +21,38 @@ public class MySQLConnector {
         return connection;
     }
 
-    private MySQLConnector() {
-
-    }
-
-    public static MySQLConnector getMySQLConnector() {
-        if (connector == null){
-            connector = new MySQLConnector();
+    public static PreparedStatement returnPrepareStatement(String sqlQuery){
+        try {
+            return getConnetion().prepareStatement(sqlQuery);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return connector;
     }
+    public static PreparedStatement returnPrepareStatement(String sqlQuery,int argument){
+        try {
+            return getConnetion().prepareStatement(sqlQuery,argument);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Statement returnStatement(){
+        try {
+            return getConnetion().createStatement();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private MySQLConnector() {
+    }
+
+
+    // методы для получения стейтменов
+
+//    public static MySQLConnector getMySQLConnector() {
+//        if (connector == null){
+//            connector = new MySQLConnector();
+//        }
+//        return connector;
+//    }
 }

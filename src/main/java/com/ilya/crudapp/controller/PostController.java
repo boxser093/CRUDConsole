@@ -7,6 +7,7 @@ import com.ilya.crudapp.repository.PostRepository;
 import com.ilya.crudapp.repository.jdbc.JDBCPostRepositoryImpl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class PostController {
@@ -29,10 +30,8 @@ public class PostController {
                 .content(content)
                 .labels(prepareLabels(longList))
                 .status(Status.ACTIVE)
-                .update(false)
-                .created(true)
+                .created(new Date())
                 .build();
-        System.out.println("Create post "+post);
         return postRepository.save(post);
     }
     public boolean deleteById(Long idForDelete) {
@@ -46,8 +45,7 @@ public class PostController {
 
         Post post = Post.builder()
                 .id(id)
-                .created(true)
-                .update(true)
+                .update(new Date())
                 .content(content)
                 .labels(labels)
                 .status(Status.ACTIVE)

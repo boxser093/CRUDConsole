@@ -15,7 +15,7 @@ public class PostView {
         System.out.println("Please inter number of labels to create post \n" +
                 "and enter 'stop' for end");
         List<Long> longList = inputLong();
-        postController.savePost(content, longList);
+        System.out.println(postController.savePost(content, longList));
     }
 
     public void edit() {

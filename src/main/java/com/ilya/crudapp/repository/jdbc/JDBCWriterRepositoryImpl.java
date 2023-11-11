@@ -1,109 +1,188 @@
 package com.ilya.crudapp.repository.jdbc;
 
-import com.ilya.crudapp.connectbd.MySQLConnector;
+import com.ilya.crudapp.model.Label;
 import com.ilya.crudapp.model.Post;
 import com.ilya.crudapp.model.Status;
 import com.ilya.crudapp.model.Writer;
-import com.ilya.crudapp.repository.LabelRepository;
-import com.ilya.crudapp.repository.PostRepository;
 import com.ilya.crudapp.repository.WriterRepository;
-
+import static com.ilya.crudapp.connectbd.MySQLConnector.returnPrepareStatement;
+import java.util.Date;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class JDBCWriterRepositoryImpl implements WriterRepository {
-    private final PostRepository bdPostRepository = new JDBCPostRepositoryImpl();
-    Connection connection = MySQLConnector.getMySQLConnector().getConnetion();
     @Override
     public Writer getById(Long aLong) {
-        Writer result = new Writer();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * from writer where id=?");
-            preparedStatement.setInt(1, Math.toIntExact(aLong));
-            ResultSet set = preparedStatement.executeQuery();
-            while (set.next()){
-                result.setId((long) set.getInt(1));
-                result.setStatus(Enum.valueOf(Status.class,set.getString(2)));
-                result.setFirstName(set.getString(3));
-                result.setLastName(set.getString(4));
-            }
-            List<Post> postList = new ArrayList<>();
-            try {
-                PreparedStatement preparedStatement1 = connection.prepareStatement("SELECT * from post where writer_id=?");
-                preparedStatement1.setInt(1, Math.toIntExact(result.getId()));
-                ResultSet set1 = preparedStatement1.executeQuery();
-                while (set1.next()){
-                    postList.add(bdPostRepository.getById((long) set1.getInt(1)));
-                }
-                result.setPosts(postList);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        } catch (SQLException e) {
+            PreparedStatement ps = returnPrepareStatement("SELECT * from writer where id=?");
+            ps.setInt(1, Math.toIntExact(aLong));
+            ResultSet resultSet = ps.executeQuery();
+            return returnWriter(resultSet);
+        } catch (SQLException e){
             throw new RuntimeException(e);
         }
-        return result;
     }
-
     @Override
     public boolean deleteById(Long aLong) {
+        Writer writer = getById(aLong);
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("DELETE from writer where id=?");
-            preparedStatement.setInt(1, Math.toIntExact(aLong));
-            preparedStatement.executeUpdate();
+            PreparedStatement ps = returnPrepareStatement("UPDATE writer SET status=? where id=?");
+            ps.setString(1,Status.DELETED.name());
+            ps.setInt(2, Math.toIntExact(aLong));
+            ps.executeUpdate();
             return true;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
-
     @Override
     public Writer save(Writer writer) {
-        int writerId = 0;
         try {
-            // записать writer
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO writer(status,firstName, lastName) values (?,?,?)");
-            preparedStatement.setString(1, writer.getStatus().name());
-            preparedStatement.setString(2, writer.getFirstName());
-            preparedStatement.setString(3, writer.getLastName());
-            preparedStatement.executeUpdate();
-            // получить id writer
-            ResultSet set = connection.createStatement().executeQuery("SELECT * FROM writer ORDER BY ID DESC LIMIT 1");
-            while (set.next()){
-                writerId = set.getInt(1);
-            }
-            // списку постов закрепленному за writer присвоить writer_id
-            for (Post postOfWriter: writer.getPosts()){
-                PreparedStatement statement = connection.prepareStatement("UPDATE post SET writer_id=? where id=?");
-                statement.setString(1, String.valueOf(writerId));
-                statement.setString(2, String.valueOf(postOfWriter.getId()));
-                statement.executeUpdate();
-            }
 
-        } catch (SQLException e) {
+            PreparedStatement ps = returnPrepareStatement("INSERT INTO writer(status,firstName,lastName) value(?,?,?)",PreparedStatement.RETURN_GENERATED_KEYS);
+            ps.setString(1, writer.getStatus().name());
+            ps.setString(2, writer.getFirstName());
+            ps.setString(3, writer.getLastName());
+            ps.executeUpdate();
+            writer.setId((long) getIdSaver(ps.getGeneratedKeys()));
+            updatePostOfWriters(writer);
+        } catch (SQLException e){
             throw new RuntimeException(e);
         }
-        return getById((long) writerId);
+        return writer;
     }
+    @Override
+    public Writer update(Writer writer) {
+        try {
+            PreparedStatement ps = returnPrepareStatement("UPDATE writer SET firstName=?, lastName=? where id=?");
+            {
+                ps.setString(1, writer.getFirstName());
+                ps.setString(2, writer.getLastName());
+                ps.setInt(3, Math.toIntExact(writer.getId()));
+            }
+            System.out.println(setNullOldPosts(writer)+" ,"+ updatePostOfWriters(writer));
+        } catch (SQLException e){
+            throw new RuntimeException(e);
+        }
 
+        return writer;
+    }
     @Override
     public List<Writer> getAll() {
         List<Writer> writers = new ArrayList<>();
-
         try {
-            ResultSet set = connection.createStatement().executeQuery("SELECT * FROM writer");
+            PreparedStatement ps = returnPrepareStatement("SELECT DISTINCT id FROM writer");
+            ResultSet set = ps.executeQuery();
             while (set.next()){
-                writers.add(getById((long) set.getInt(1)));
+                Writer tmp = getById((long) set.getInt(1));
+                if(tmp.getStatus().equals(Status.ACTIVE)) {
+                    writers.add(tmp);
+                }
+            }
+            return writers;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private Writer returnWriter(ResultSet set){
+       Writer writer = new Writer();
+        try {
+            // мапим писателя
+            while (set.next()){
+                writer.setId((long) set.getInt(1));
+                writer.setStatus(Enum.valueOf(Status.class,set.getString(2)));
+                writer.setFirstName(set.getString(3));
+                writer.setLastName(set.getString(4));
+            }
+
+            List<Post> postList = new ArrayList<>();
+            PreparedStatement ps1 = returnPrepareStatement("SELECT DISTINCT id FROM post where writer_id=?");
+            ps1.setInt(1, Math.toIntExact(writer.getId()));
+            ResultSet set1 = ps1.executeQuery();
+            while (set1.next()){
+                postList.add(getByIdPost((long) set1.getInt(1)));
+            }
+            writer.setPosts(postList);
+        } catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+        return writer;
+    }
+    public Post getByIdPost(Long aLong) {
+        try {
+            PreparedStatement ps = returnPrepareStatement("select * from post join posts_labels on post.id = posts_labels.post_id join label on posts_labels.label_id = label.id where post.id=?");
+            ps.setInt(1, Math.toIntExact(aLong));
+            ResultSet set = ps.executeQuery();
+            return returnPost(set);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private Post returnPost(ResultSet set) {
+        Post post = new Post();
+        List<Label> labels = new ArrayList<>();
+        try {
+            while (set.next()) {
+                post.setId((long) set.getInt(1));
+                post.setContent(set.getString(2));
+                post.setCreated(set.getDate(3));
+                post.setUpdate(set.getDate(4));
+                post.setStatus(Enum.valueOf(Status.class,set.getString(5)));
+                Label tmp = new Label();
+                tmp.setId((long) set.getInt(9));
+                tmp.setName(set.getString(10));
+                tmp.setStatus(Enum.valueOf(Status.class,set.getString(11)));
+                if (tmp.getStatus().equals(Status.ACTIVE)){
+                    labels.add(tmp);
+                }
+            }
+            post.setLabels(labels);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return post;
+    }
+    private boolean updatePostOfWriters(Writer writerIn) {
+        try {
+            PreparedStatement postNewUpdate = returnPrepareStatement("UPDATE post SET writer_id=?, `update`=? where id=?");
+            for (Post post : writerIn.getPosts()) {
+                postNewUpdate.setInt(1, Math.toIntExact(writerIn.getId()));
+                Date date1 = new java.util.Date();
+                Timestamp timestamp1 = new Timestamp(date1.getTime());
+                postNewUpdate.setTimestamp(2, timestamp1);
+                postNewUpdate.setInt(3, Math.toIntExact(post.getId()));
+                postNewUpdate.executeUpdate();
+                return true;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return writers;
+        return false;
     }
-
-    @Override
-    public Writer update(Writer writer) {
-        return null;
+    private boolean setNullOldPosts(Writer writerIn) {
+        try {
+            PreparedStatement postUpdate = returnPrepareStatement("UPDATE post SET writer_id=?, `update`=? where id=?");
+            postUpdate.setString(1, null);
+            Date date = new java.util.Date();
+            Timestamp timestamp = new Timestamp(date.getTime());
+            postUpdate.setTimestamp(2, timestamp);
+            postUpdate.setInt(3, Math.toIntExact(writerIn.getId()));
+            postUpdate.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private int getIdSaver(ResultSet query){
+        try {
+            int idSaver=0;
+            if(query.first()){
+                idSaver = query.getInt(1);
+            }
+            return idSaver;
+        } catch (SQLException e){
+            throw new RuntimeException(e);
+        }
     }
 }

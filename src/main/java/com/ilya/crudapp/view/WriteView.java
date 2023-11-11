@@ -22,8 +22,7 @@ public class WriteView {
                 "and input 'stop' for end");
         List<Long> ideasPost = inputLong();
 
-        Writer createWriter = writerController.saveWriter(firstName, lastName, ideasPost);
-        System.out.println("created Writer:" + createWriter);
+        System.out.println( writerController.saveWriter(firstName, lastName, ideasPost));
     }
 
     public void edit() {
@@ -40,6 +39,7 @@ public class WriteView {
         switch (mode) {
             case 1:
                 System.out.println("first name");
+                scanner.nextLine();
                 String firstName = scanner.nextLine();
                 System.out.println("last name");
                 String lastName = scanner.nextLine();

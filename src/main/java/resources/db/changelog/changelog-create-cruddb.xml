@@ -20,9 +20,9 @@
             <column autoIncrement="true" name="id" type="int">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="status" type="boolean"/>
+            <column name="status" type="text"/>
             <column name="firstName" type="varchar(64)"/>
-            <column name="lastName" type="varchar(64)"/>
+            <column name="lastName" type="varchar(128)"/>
         </createTable>
     </changeSet>
 
@@ -31,17 +31,15 @@
             <column autoIncrement="true" name="id" type="int">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="content" type="string"/>
-            <column name="createdStatus" type="boolean"/>
-            <column name="updateStatus" type="boolean"/>
-            <column name="statusActiviti" type="boolean"/>
+            <column name="content" type="text"/>
+            <column name="created" type="data"/>
+            <column name="update" type="data"/>
+            <column name="status" type="text"/>
             <column name="writerId" type="int">
                 <constraints foreignKeyName="writerId" references="writer(id)" deleteCascade="true"/>
             </column>
         </createTable>
     </changeSet>
-
-
 
     <changeSet id="create-posts_labels-table" author="Ilya Predvechniy">
         <createTable tableName="posts_labels">

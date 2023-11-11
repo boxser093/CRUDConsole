@@ -2,6 +2,7 @@ package com.ilya.crudapp.model;
 
 import lombok.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -11,10 +12,8 @@ import java.util.List;
 public class Post {
     private Long id;
     private String content;
-    @Getter
-    private boolean created;
-    @Getter
-    private boolean update;
+    private Date created;
+    private Date update;
     private Status status;
     private List<Label> labels;
 }

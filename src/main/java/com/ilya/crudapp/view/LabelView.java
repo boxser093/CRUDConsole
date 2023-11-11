@@ -11,8 +11,7 @@ public class LabelView {
     public void createLabel() {
         System.out.println("Enter name");
         String name = scanner.nextLine();
-        Label cratedLabel = labelController.saveLabel(name);
-        System.out.println("created label:" + cratedLabel);
+        System.out.println(labelController.saveLabel(name));
     }
     public void edit() {
         System.out.println("Enter id for edit label");
@@ -20,7 +19,7 @@ public class LabelView {
         System.out.println("Enter new name");
         scanner.nextLine();
         String name = scanner.nextLine();
-        labelController.updateLabel(id, name, Status.ACTIVE);
+        labelController.updateLabel(id, name);
         System.out.println("Update successful ");
 
     }
