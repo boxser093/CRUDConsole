@@ -4,8 +4,6 @@ import com.ilya.crudapp.model.Label;
 import com.ilya.crudapp.model.Status;
 import com.ilya.crudapp.repository.LabelRepository;
 import com.ilya.crudapp.repository.jdbc.JDBCLabelRepositoryImpl;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class LabelController {

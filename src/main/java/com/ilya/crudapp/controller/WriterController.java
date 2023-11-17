@@ -32,7 +32,6 @@ public class WriterController {
                 .id(idForDelete)
                 .status(Status.DELETED)
                 .build();
-
         return writerRepository.deleteById(idForDelete);
     }
     public List<Writer> findAll() {

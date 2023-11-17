@@ -7,8 +7,6 @@ public class MySQLConnector {
     private static final String userName = "root";
     private static final String password = "228228";
     private static String connectionUrl = "jdbc:mysql://localhost:3306/tests1";
-
-    // паблик стати к статик гет конекшен
     private static Connection getConnetion() {
         Connection connection;
         try {
@@ -46,13 +44,4 @@ public class MySQLConnector {
     private MySQLConnector() {
     }
 
-
-    // методы для получения стейтменов
-
-//    public static MySQLConnector getMySQLConnector() {
-//        if (connector == null){
-//            connector = new MySQLConnector();
-//        }
-//        return connector;
-//    }
 }
