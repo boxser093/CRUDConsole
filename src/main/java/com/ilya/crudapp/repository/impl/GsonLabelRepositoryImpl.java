@@ -15,7 +15,7 @@ import com.ilya.crudapp.model.Status;
 import com.ilya.crudapp.repository.LabelRepository;
 
 public class GsonLabelRepositoryImpl implements LabelRepository {
-    private final String failName = "labels.json";
+    private final String failName = "labels.json.xml";
     private final Gson GSON = new Gson();
 
     private List<Label> getAllLabels() {

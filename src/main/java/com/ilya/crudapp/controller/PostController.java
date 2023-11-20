@@ -4,6 +4,7 @@ import com.ilya.crudapp.model.Label;
 import com.ilya.crudapp.model.Post;
 import com.ilya.crudapp.model.Status;
 import com.ilya.crudapp.repository.PostRepository;
+import com.ilya.crudapp.repository.hibernate.HbPostRepositoryImpl;
 import com.ilya.crudapp.repository.jdbc.JDBCPostRepositoryImpl;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class PostController {
         this.labelController = labelController;
     }
     public PostController() {
-        postRepository = new JDBCPostRepositoryImpl();
+        postRepository = new HbPostRepositoryImpl();
         labelController = new LabelController();
     }
 

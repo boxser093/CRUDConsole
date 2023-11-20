@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class GsonPostRepositoryImpl implements PostRepository {
-    private final String failName = "posts.json";
+    private final String failName = "posts.json.xml";
     private final Gson GSON = new Gson();
     private List<Post> getAllPost() {
         List<Post> result = new ArrayList<>();

@@ -4,6 +4,7 @@ import com.ilya.crudapp.model.Post;
 import com.ilya.crudapp.model.Status;
 import com.ilya.crudapp.model.Writer;
 import com.ilya.crudapp.repository.WriterRepository;
+import com.ilya.crudapp.repository.hibernate.HbWriterRepositoryImpl;
 import com.ilya.crudapp.repository.jdbc.JDBCWriterRepositoryImpl;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class WriterController {
     }
 
     public WriterController() {
-        writerRepository = new JDBCWriterRepositoryImpl();
+        writerRepository = new HbWriterRepositoryImpl();
         postController = new PostController();
     }
 

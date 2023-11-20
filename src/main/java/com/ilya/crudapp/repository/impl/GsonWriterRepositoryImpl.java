@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class GsonWriterRepositoryImpl implements WriterRepository {
-    private final String failName = "writers.json";
+    private final String failName = "writers.json.xml";
     private final Gson GSON = new Gson();
     private List<Writer> getAllWriters() {
         List<Writer> result = new ArrayList<>();

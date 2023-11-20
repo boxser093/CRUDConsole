@@ -17,9 +17,26 @@
         <mysql.version>8.0.33</mysql.version>
         <liquibase.version>4.24.0</liquibase.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <flyway.version>10.0.1</flyway.version>
+        <postgresql.version>42.6.0</postgresql.version>
+        <flyway.user>postgres</flyway.user>
+        <flyway.password>1234</flyway.password>
+        <flyway.url>jdbc:postgresql://localhost:5432/test1</flyway.url>
+        <hibernate.core.version>6.2.7.Final</hibernate.core.version>
+        <hibernate.entitymanager.version>5.6.15.Final</hibernate.entitymanager.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.entitymanager.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -28,6 +45,11 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-maven-plugin</artifactId>
+            <version>${flyway.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -54,6 +76,11 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.liquibase</groupId>
@@ -78,6 +105,16 @@
                 <configuration>
                     <source>11</source>
                     <target>11</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>10.0.0</version>
+                <configuration>
+                    <url>${flyway.url}</url>
+                    <user>${flyway.user}</user>
+                    <password>${flyway.password}</password>
                 </configuration>
             </plugin>
         </plugins>
